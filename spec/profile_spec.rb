@@ -20,16 +20,16 @@ end
 describe "Profile from specific find" do
   before(:each) do
     VCR.use_cassette('search_by_username', :erb => {:username => ENV['OKC_USERNAME'], :password => ENV['OKC_PASSWORD']}) do
-      @profile = OKCupid.new(ENV['OKC_USERNAME'], ENV['OKC_PASSWORD']).profile_for('voliobi_te')
+      @profile = OKCupid.new(ENV['OKC_USERNAME'], ENV['OKC_PASSWORD']).profile_for('hdarden4u')
     end
   end
   
   it "has a username" do
-    @profile.username.should == 'voliobi_te'
+    @profile.username.should == 'hdarden4u'
   end
   
   it "has an age" do
-    @profile.age.should == '21'
+    @profile.age.should == 21
   end
     
   it "has a match %" do

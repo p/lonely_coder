@@ -25,6 +25,7 @@ class OKCupid
   class Profile
     attr_accessor :username, :match, :friend, :enemy, :location,
                   :age, :sex, :orientation, :relationship_status,
+                  :gentation, :ages, :near, :looking_for, :looking_for_single,
                   :small_avatar_url, :relationship_type
 
     # extended profile details
@@ -41,7 +42,6 @@ class OKCupid
 
       percents = html.search('div.percentages')
       match = percents.search('p.match .percentage').text.to_i
-      friend = percents.search('p.friend .percentage').text.to_i
       enemy = percents.search('p.enemy .percentage').text.to_i
 
       location = html.search('p.location').text
@@ -54,7 +54,6 @@ class OKCupid
         orientation: OKCupid.strip(orientation),
         relationship_status: OKCupid.strip(relationship_status),
         match: match,
-        friend: friend,
         enemy: enemy,
         location: location,
         small_avatar_url: small_avatar_url,
@@ -99,17 +98,20 @@ class OKCupid
       html = browser.get("http://www.okcupid.com/profile/#{username}")
 
       percents = html.search('#percentages')
-      match = percents.search('span.match').text.to_i
-      friend = percents.search('span.friend').text.to_i
-      enemy = percents.search('span.enemy').text.to_i
+      match = percents.search('.match .percent').text.to_i
+      enemy = percents.search('.enemy .percent').text.to_i
 
       basic = html.search('#aso_loc')
-      age = basic.search('#ajax_age').text
-      sex = basic.search('#ajax_gender').text
-      orientation = basic.search('#ajax_orientation').text
-      relationship_status = basic.search('#ajax_status').text
+      age = basic.search('#ajax_age').text.to_i
+      sex = basic.search('.infos .ajax_gender').text
+      gentation = html.search('#ajax_gentation').text.strip
+      ages = html.search('#ajax_gentation').text.strip
+      near = html.search('#ajax_near').text.strip
+      looking_for_single = html.search('#ajax_single').text.strip
+      looking_for = html.search('#ajax_lookingfor').text.strip
+      relationship_status = html.search('#ajax_status').text.strip
       location = basic.search('#ajax_location').text
-      relationship_type = basic.search('#ajax_monogamous').text
+      distance = basic.search('.dist').text.strip.sub(%r/\A\((.+)\)\z/, '\1')
       profile_thumb_urls = html.search('#profile_thumbs img').collect {|img| img.attribute('src').value}
 
       essays = []
@@ -120,12 +122,16 @@ class OKCupid
       attributes = {
         username: username,
         match: match,
-        friend: friend,
         enemy: enemy,
         age: age,
         sex: sex,
-        orientation: orientation,
+        gentation: gentation,
+        ages: ages,
+        near: near,
+        looking_for_single: looking_for_single,
+        looking_for: looking_for,
         location: location,
+        distance: distance,
         relationship_status: relationship_status,
         profile_thumb_urls: profile_thumb_urls,
         relationship_type: relationship_type,
@@ -135,10 +141,12 @@ class OKCupid
       details_div = html.search('#profile_details dl')
 
       details_div.each do |node|
+        node.search('dd script').map(&:remove)
+        
         value = OKCupid.strip(node.search('dd').text)
         next if value == '—'
 
-        attr_name = node.search('dt').text.downcase.gsub(' ','_')
+        attr_name = node.search('dt').text.strip.downcase.gsub(' ','_')
         attributes[attr_name] = value
       end
 
