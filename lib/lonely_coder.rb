@@ -8,11 +8,13 @@
 #               `Y'       - trek
 #
 require 'mechanize'
+require 'addressable/uri'
+require 'dimensions'
 
 class OKCupid
   BaseUrl = 'http://www.okcupid.com'
-  VERSION = '0.1.5'
-
+  VERSION = '0.2.0'
+  
   def initialize(username=nil, password=nil)
     @browser = Mechanize.new
     @browser.user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36'
