@@ -23,10 +23,10 @@ class OKCupid
   end
   
   class Profile
-    attr_accessor :username, :match, :friend, :enemy, :location,
+    attr_accessor :username, :match, :friend, :enemy, :location, :distance,
                   :age, :sex, :orientation, :relationship_status,
                   :gentation, :ages, :near, :looking_for, :looking_for_single,
-                  :small_avatar_url, :relationship_type
+                  :small_avatar_url
 
     # extended profile details
     attr_accessor :last_online, :ethnicity, :height, :body_type, :diet, :smokes,
@@ -57,7 +57,6 @@ class OKCupid
         enemy: enemy,
         location: location,
         small_avatar_url: small_avatar_url,
-        relationship_type: relationship_type,
       })
     end
 
@@ -134,7 +133,6 @@ class OKCupid
         distance: distance,
         relationship_status: relationship_status,
         profile_thumb_urls: profile_thumb_urls,
-        relationship_type: relationship_type,
         essays: essays,
       }
 
@@ -147,6 +145,9 @@ class OKCupid
         next if value == '—'
 
         attr_name = node.search('dt').text.strip.downcase.gsub(' ','_')
+        if attr_name == 'status'
+          attr_name = 'relationship_status'
+        end
         attributes[attr_name] = value
       end
 
