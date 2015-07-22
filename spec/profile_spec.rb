@@ -141,6 +141,7 @@ describe "Profile from search result" do
       @profile = OKCupid.new(ENV['OKC_USERNAME'], ENV['OKC_PASSWORD']).search({
         gentation: 'girls who like guys'
       }).results.first
+      @profile.should_not be_nil
     end
   end
   
