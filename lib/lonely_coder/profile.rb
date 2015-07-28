@@ -34,6 +34,19 @@ class OKCupid
                   :offspring, :pets, :speaks, :profile_thumb_urls, :essays
 
 
+    def essay_keys
+      {
+        'My self-summary' => 0,
+        'What I\'m doing with my life' => 1,
+        'I\'m really good at' => 2,
+        'Favorite books, movies, shows, music and food' => 4,
+        'The six things I could never do without' => 5,
+        'I spend a lot of time thinking about' => 6,
+        'On a typical Friday night I am' => 7,
+        'You should message me if' => 9,
+      }
+    end
+
     # Scraping is never pretty.
     def self.from_search_result(html)
 
