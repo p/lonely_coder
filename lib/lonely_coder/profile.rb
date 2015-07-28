@@ -39,10 +39,12 @@ class OKCupid
         'My self-summary' => 0,
         'What I\'m doing with my life' => 1,
         'I\'m really good at' => 2,
+        'The first things people usually notice about me' => 3,
         'Favorite books, movies, shows, music and food' => 4,
         'The six things I could never do without' => 5,
         'I spend a lot of time thinking about' => 6,
         'On a typical Friday night I am' => 7,
+        'The most private thing I\'m willing to admit' => 8,
         'You should message me if' => 9,
       }
     end
