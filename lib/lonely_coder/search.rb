@@ -138,7 +138,7 @@ class OKCupid
       # OKCupid may return previously found profiles if there aren't enough
       # to fill a query or pagination, so we stop that with a set.
       @results = Set.new
-      @results += page.search('.match_row').collect do |node|
+      @results += page.search('.match_card_wrapper').collect do |node|
         OKCupid::Profile.from_search_result(node)
       end
 
