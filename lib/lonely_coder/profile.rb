@@ -15,7 +15,7 @@ class OKCupid
   end
 
   def update_section(section, text)
-    Profile.update_profile_section(section, text, @browser)
+    Profile.update_profile_section(section, text, @browser, @authentication)
   end
 
   def upload_pic(file, caption)
@@ -35,18 +35,18 @@ class OKCupid
                   :offspring, :pets, :speaks, :profile_thumb_urls, :essays
 
 
-    def essay_keys
+    def self.essay_keys
       {
-        'My self-summary' => 0,
-        'What I\'m doing with my life' => 1,
-        'I\'m really good at' => 2,
-        'The first things people usually notice about me' => 3,
-        'Favorite books, movies, shows, music and food' => 4,
-        'The six things I could never do without' => 5,
-        'I spend a lot of time thinking about' => 6,
-        'On a typical Friday night I am' => 7,
-        'The most private thing I\'m willing to admit' => 8,
-        'You should message me if' => 9,
+        "My self-summary" => 0,
+        "What I\u2019m doing with my life" => 1,
+        "I\u2019m really good at" => 2,
+        "The first things people usually notice about me" => 3,
+        "Favorite books, movies, shows, music, and food" => 4,
+        "The six things I could never do without" => 5,
+        "I spend a lot of time thinking about" => 6,
+        "On a typical Friday night I am" => 7,
+        "The most private thing I\u2019m willing to admit" => 8,
+        "You should message me if" => 9,
       }
     end
 
@@ -108,6 +108,22 @@ class OKCupid
 
       return new_visitors
     end
+    
+    class Essay
+      attr_reader :index
+      attr_reader :title
+      attr_reader :content
+      
+      def initialize(index, title, content)
+        @index = index
+        @title = title
+        @content = content
+      end
+      
+      def to_hash
+        {index: self.index, title: self.title, content: self.content}
+      end
+    end
 
     def Profile.by_username(username, browser)
       html = browser.get("http://www.okcupid.com/profile/#{username}")
@@ -130,8 +146,14 @@ class OKCupid
       profile_thumb_urls = html.search('#profile_thumbs img').collect {|img| img.attribute('src').value}
 
       essays = []
-      10.times do |i|
-        essays[i] = html.search('#essay_text_' + i.to_s).text.strip!
+      html.search('.essays2015-essay').each do |essay|
+        title = essay.search('.essays2015-essay-title').text.strip!
+        content = essay.search('.essays2015-essay-content').text.strip!
+        index = Profile.essay_keys[title]
+        if not index
+          raise "Could not find index for title: #{title}"
+        end
+        essays[index] = Essay.new(index, title, content)
       end
 
       attributes = {
@@ -170,7 +192,7 @@ class OKCupid
       self.new(attributes)
     end
 
-    def Profile.update_profile_section(section, text, browser)
+    def Profile.update_profile_section(section, text, browser, authentication)
       section_titles = [
         "My self-summary",
         "What I’m doing with my life",
@@ -200,17 +222,11 @@ class OKCupid
         section = section_titles_hash[section]
       end
       
-      profile = browser.get('http://www.okcupid.com/profile')
-
-      authcode = profile.body.match(/authcode['"]?\s*:\s*['"]([\w,;]+?)['"]/)[1]
-
-      section_response = browser.post('http://www.okcupid.com/profileedit2', {
-        :authcode => authcode,
-        :essay_body => text,
-        :essay_id => section,
-        :change_summary => "[title:start]#{section_titles[section]}[title:end][add:start]#{text}[add:end]",
-        :okc_api => 1
-      })
+      browser.post('https://www.okcupid.com/1/apitun/profile/edit/essays',
+        {'essays' => {section.to_s => text}}.to_json,
+        {'Authorization' => "Bearer #{authentication.access_token}",
+        'Content-Type' => 'application/json'},
+      )
     end
 
     def Profile.upload_picture(file, caption, browser)
