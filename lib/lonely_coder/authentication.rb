@@ -11,6 +11,8 @@ class OKCupid
   end
   
   class Authentication
+    attr_reader :access_token
+    
     def initialize(username, password, browser)
       change_to_using_simpler_parser(browser)
 
@@ -26,6 +28,10 @@ class OKCupid
       # and equal to the supplied username for success.
       # there may be other cases?
       @success = body['screenname'] != nil
+      
+      if @success
+        @access_token = body['oauth_accesstoken']
+      end
 
       restore_default_parser(browser)
     end
