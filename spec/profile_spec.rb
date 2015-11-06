@@ -20,16 +20,16 @@ end
 describe "Profile from specific find" do
   before(:each) do
     VCR.use_cassette('search_by_username', :erb => {:username => ENV['OKC_USERNAME'], :password => ENV['OKC_PASSWORD']}) do
-      @profile = OKCupid.new(ENV['OKC_USERNAME'], ENV['OKC_PASSWORD']).profile_for('hdarden4u')
+      @profile = OKCupid.new(ENV['OKC_USERNAME'], ENV['OKC_PASSWORD']).profile_for('a2u2')
     end
   end
   
   it "has a username" do
-    @profile.username.should == 'hdarden4u'
+    @profile.username.should == 'a2u2'
   end
   
   it "has an age" do
-    @profile.age.should == 21
+    @profile.age.should == 83
   end
     
   it "has a match %" do
@@ -45,7 +45,7 @@ describe "Profile from specific find" do
   end
   
   it "has a location" do
-    @profile.location.should == 'Ann Arbor, Michigan'
+    @profile.location.should == 'Buckatunna, MS'
   end
   
   it " doesn't has a small avatar url" do
@@ -57,7 +57,7 @@ describe "Profile from specific find" do
   end
   
   it "has a sex" do
-    @profile.sex.should == 'M'
+    @profile.sex.should == 'Woman'
   end
   
   it "has an orientation" do
@@ -101,15 +101,15 @@ describe "Profile from specific find" do
   end
 
   it "has a religion" do
-    @profile.religion.should == 'Agnosticism but not too serious about it'
+    @profile.religion.should == "Agnosticism but it\u2019s not important"
   end
 
   it "has a sign" do
-    @profile.sign.should == 'Gemini and it’s fun to think about'
+    @profile.sign.should == 'Gemini'
   end
 
   it "has a education" do
-    @profile.education.should == 'Working on college/university'
+    @profile.education.should == 'Working on University'
   end
 
   it "has a job" do
@@ -129,7 +129,7 @@ describe "Profile from specific find" do
   end
 
   it "has a speaks" do
-    @profile.speaks.should == 'English (Fluently), Serbian (Fluently), Croatian (Fluently)'
+    @profile.speaks.should == 'English (Fluently), Korean, Danish (Somewhat)'
   end
   
 end

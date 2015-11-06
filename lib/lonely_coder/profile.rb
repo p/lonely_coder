@@ -29,8 +29,9 @@ class OKCupid
                   :small_avatar_url
 
     # extended profile details
-    attr_accessor :last_online, :ethnicity, :height, :body_type, :diet, :smokes,
-                  :drinks, :drugs, :religion, :sign, :education, :job, :income,
+    attr_accessor :last_online, :ethnicity, :height, :body_type, :diet,
+                  :special_diet, :smoking,
+                  :drinking, :drugs, :religion, :sign, :education, :job, :income,
                   :offspring, :pets, :speaks, :profile_thumb_urls, :essays
 
 
